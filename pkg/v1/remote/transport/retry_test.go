@@ -33,7 +33,7 @@ type mockTransport struct {
 	count int
 }
 
-func (t *mockTransport) RoundTrip(in *http.Request) (out *http.Response, err error) {
+func (t *mockTransport) RoundTrip(_ *http.Request) (out *http.Response, err error) {
 	defer func() { t.count++ }()
 	if t.count < len(t.resps) {
 		out = t.resps[t.count]
@@ -145,7 +145,7 @@ func TestRetryDefaults(t *testing.T) {
 func TestTimeoutContext(t *testing.T) {
 	tr := NewRetry(http.DefaultTransport)
 
-	slowServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	slowServer := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {
 		// hanging request
 		time.Sleep(time.Second * 1)
 	}))
